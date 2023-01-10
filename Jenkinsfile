@@ -39,16 +39,7 @@ pipeline {
           sh 'cat target/sonar/report-task.txt'
         }
       }
-    }	  
-	  
-    stage ('Nodejsscan') {
-		    steps {
-	        sh 'rm nodejsscan || true'
-		sh 'docker pull opensecurity/nodejsscan:latest'
-		sh 'docker run -it -p 9090:9090 opensecurity/nodejsscan:latest https://github.com/manikmbd/webapp.git  > nodejsscan'
-		sh 'cat nodejsscan'
-	    }
-	    }	  
+    }	  	  
     
     stage ('Build') {
         steps {
