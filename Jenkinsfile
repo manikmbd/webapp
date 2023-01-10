@@ -54,5 +54,31 @@ pipeline {
               }      
            }       
     }
+    
+    stage ('Port Scan') {
+		    steps {
+			sh 'rm nmap* || true'
+			sh 'docker run --rm -v "$(pwd)":/data uzyexe/nmap -sS -sV -oX nmap 65.0.109.61'
+			sh 'cat nmap'
+		    }
+	    }
+    
+    stage ('Nikto Scan') {
+		    steps {
+			sh 'rm nikto-output.xml || true'
+			sh 'docker pull secfigo/nikto:latest'
+			sh 'docker run --user $(id -u):$(id -g) --rm -v $(pwd):/report -i secfigo/nikto:latest -h 54.86.226.84 -p 8080 -output /report/nikto-output.xml'
+			sh 'cat nikto-output.xml'   
+		    }
+	    }
+	    
+	    stage ('SSL Checks') {
+		    steps {
+			sh 'pip install sslyze==1.4.2'
+			sh 'python -m sslyze --regular 54.86.226.84:8080 --json_out sslyze-output.json'
+			sh 'cat sslyze-output.json'
+		    }
+	    }
+    
         }
     }
