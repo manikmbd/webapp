@@ -45,7 +45,7 @@ pipeline {
 		    steps {
 	        sh 'rm nodejsscan || true'
 		sh 'docker pull opensecurity/nodejsscan:latest'
-		sh 'docker run -it -p 9090:9090 opensecurity/nodejsscan:latest -u http://65.0.109.61:8080/webapp/ --json > nodejsscan'
+		sh 'docker run -it -p 9090:9090 opensecurity/nodejsscan:latest https://github.com/manikmbd/webapp.git  > nodejsscan'
 		sh 'cat nodejsscan'
 	    }
 	    }	  
@@ -55,15 +55,6 @@ pipeline {
             sh 'mvn clean package'
           }
           }
-    
-    stage ('SAST') {
-      steps {
-        withSonarQubeEnv('sonar') {
-          sh 'mvn sonar:sonar'
-          sh 'cat target/sonar/report-task.txt'
-        }
-      }
-    }
 
     stage ('Deploy-To-Tomcat') {
             steps {
