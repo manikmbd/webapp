@@ -76,7 +76,7 @@ pipeline {
 		    steps {
 	        sh 'rm nuclei || true'
 		sh 'docker pull projectdiscovery/nuclei'
-		sh 'docker run -t projectdiscovery/nuclei -u http://65.0.109.61:8080/webapp/ > nuclei'
+		sh 'docker run -t projectdiscovery/nuclei -u http://65.0.109.61:8080/webapp/ --json > nuclei'
 		sh 'cat nuclei'
 	    }
 	    }
