@@ -21,7 +21,7 @@ pipeline {
       }
     }
     
-    stage ('Source Composition Analysis') {
+    stage ('SCA') {
       steps {
          sh 'rm owasp* || true'
          sh 'wget "https://raw.githubusercontent.com/manikmbd/webapp/master/owasp-dependency-check.sh" '
