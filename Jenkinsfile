@@ -50,7 +50,7 @@ pipeline {
     stage ('Deploy-To-Tomcat') {
             steps {
            sshagent(['tomcat']) {
-                sh 'scp -o StrictHostKeyChecking=no target/*.war ubuntu@13.235.69.53:/var/lib/tomcat9/webapps/webapp.war'
+                sh 'scp -o StrictHostKeyChecking=no target/*.war ubuntu@3.109.202.96:/var/lib/tomcat9/webapps/webapp.war'
               }      
            }       
     }
@@ -58,7 +58,7 @@ pipeline {
     stage ('Port Scan') {
 		    steps {
 			sh 'rm nmap* || true'
-			sh 'docker run --rm -v "$(pwd)":/data uzyexe/nmap -sS -sV -oX nmap 13.235.69.53'
+			sh 'docker run --rm -v "$(pwd)":/data uzyexe/nmap -sS -sV -oX nmap 3.109.202.96'
 			sh 'cat nmap'
 		    }
 	    }
@@ -67,7 +67,7 @@ pipeline {
 		    steps {
 			sh 'rm nikto-output.xml || true'
 			sh 'docker pull secfigo/nikto:latest'
-			sh 'docker run --user $(id -u):$(id -g) --rm -v $(pwd):/report -i secfigo/nikto:latest -h 13.235.69.53 -p 8080 -output /report/nikto-output.xml'
+			sh 'docker run --user $(id -u):$(id -g) --rm -v $(pwd):/report -i secfigo/nikto:latest -h 3.109.202.96 -p 8080 -output /report/nikto-output.xml'
 			sh 'cat nikto-output.xml'   
 		    }
 	    }
@@ -76,7 +76,7 @@ pipeline {
 		    steps {
 	        sh 'rm nuclei || true'
 		sh 'docker pull projectdiscovery/nuclei'
-		sh 'docker run -t projectdiscovery/nuclei -u http://13.235.69.53:8080/webapp/ --json > nuclei'
+		sh 'docker run -t projectdiscovery/nuclei -u http://3.109.202.96:8080/webapp/ --json > nuclei'
 		sh 'cat nuclei'
 	    }
 	    }
