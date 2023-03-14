@@ -13,10 +13,10 @@ pipeline {
       }
     }
     
-    stage ('Check-Git-Secrets') {
+    stage ('Secret Scanning') {
       steps {
         sh 'rm trufflehog || true'
-	sh 'docker run -v "$(pwd):/workdir" --rm us-docker.pkg.dev/thog-artifacts/public/scanner:latest git --fail-verified main HEAD /workdir > trufflehog'
+        sh 'docker run gesellix/trufflehog --json https://github.com/manikmbd/webapp.git > trufflehog'
         sh 'cat trufflehog'
       }
     }
@@ -32,7 +32,7 @@ pipeline {
       }
     }
 	  
-    stage ('SAST') {
+    stage ('SAST - SonarQube') {
       steps {
         withSonarQubeEnv('sonar') {
           sh 'mvn sonar:sonar'
@@ -63,7 +63,7 @@ pipeline {
 		    }
 	    }
     
-    stage ('Nikto Scan') {
+    stage ('Nikto Scan - DAST') {
 		    steps {
 			sh 'rm nikto-output.xml || true'
 			sh 'docker pull secfigo/nikto:latest'
@@ -72,7 +72,7 @@ pipeline {
 		    }
 	    }
 	  
-    stage ('Nuclei') {
+    stage ('Nuclei Template Scan') {
 		    steps {
 	        sh 'rm nuclei || true'
 		sh 'docker pull projectdiscovery/nuclei'
