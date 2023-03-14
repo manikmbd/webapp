@@ -16,8 +16,7 @@ pipeline {
     stage ('Check-Git-Secrets') {
       steps {
         sh 'rm trufflehog || true'
-	sh 'docker pull trufflesecurity/trufflehog:v3.0.0-rc0'
-        sh 'docker run trufflesecurity/trufflehog:v3.0.0-rc0 --json https://github.com/manikmbd/webapp.git > trufflehog'
+	sh 'docker run -v "$(pwd):/workdir" -it --rm us-docker.pkg.dev/thog-artifacts/public/scanner:latest git --fail-verified main HEAD /workdir > trufflehog'
         sh 'cat trufflehog'
       }
     }
